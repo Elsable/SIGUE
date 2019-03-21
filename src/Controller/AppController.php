@@ -16,6 +16,9 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+// Prueba para obtener el rol de usuario
+use Cake\ORM\TableRegistry;
+
 
 /**
  * Application Controller
@@ -51,5 +54,36 @@ class AppController extends Controller
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
+        $this->loadComponent('Auth', [
+            // Added this line
+            'authorize'=> ['Controller'],
+            'authenticate' => [
+                'Form' => [
+                    'finder' => 'auth'
+                ]
+            ],
+
+            'loginAction' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ],
+            'autError'=>'Inicie sesión para hacer uso del sistema',
+            'loginRedirect'=>['controller'=>'Pages', 'action'=>'home'],
+            'logoutRedirect'=>['controller'=>'Users','action'=>'login'],
+            'unauthorizedRedirect'=>$this->referer()
+        ]);
+    }
+
+    public function beforeFilter(Event $event) {
+        $this->set(['current_user'=>$this->Auth->user()]);
+    } 
+
+    public function isAuthorized($user)
+    {
+        if(isset($user['username']) and $user['username'] =='superadmin') {
+            echo 'Es superadmin, acceso total';
+            return true;
+        }
+        return false;
     }
 }
