@@ -54,10 +54,10 @@ class AcademicsController extends AppController
                     return true;
                 }
             }
-        }
+        }*/
        
 
-        return parent::isAuthorized($user);*/
+        return parent::isAuthorized($user);
     }
     // *************************************************
     //   Termina bloque de identificación de usuario
